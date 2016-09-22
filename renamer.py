@@ -19,6 +19,6 @@ class Renamer:
         return {name: self.transformSingle(name) for name in nameList}
 
     def apply(self, nameList):
-        nameMap = transform(self, nameList)
-        for src, dst in items(nameMap):
+        nameMap = self.transform(nameList)
+        for src, dst in nameMap.items():
             os.rename(src, dst)

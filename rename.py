@@ -65,7 +65,7 @@ parser.add_argument( "-n", "--number", metavar="countstring", dest="operations",
 
 # followed by 1 or more strings
 parser.add_argument( "files", type=str, nargs='+', help="list of filenames" )
- 
+
 # parse command arguments
 args = parser.parse_args()
 
@@ -75,21 +75,6 @@ if args.delete:
 if args.touch:
     Touch(args.files)    
 
-# print results of parsing
-print( '\ncmd args:', sys.argv )
-print()
-print( 'argparse:', args )
-print()
-
-print( 'args.verbose =', args.verbose )
-print( 'args.print =', args.print )
-print( 'args.interactive =', args.interactive )
-print( 'args.delete =', args.delete )
-print( 'args.touch =', args.touch )
-
-print( 'args.date =', args.date )
-print( 'args.time =', args.time )
-
-print( 'args.operations =', args.operations )
-
-print ( "files", args.files )
+if args.operations:
+    renamer = Renamer(args.operations)
+    renamer.apply(args.files)
