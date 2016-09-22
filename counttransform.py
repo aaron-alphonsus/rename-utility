@@ -1,6 +1,6 @@
 import re
 
-class counttransform:
+class CountTransform:
     def __init__(self, pattern):
         self.idx = 0
         self.prefix, replace, self.suffix = re.split("(?<=[^#])(?=#)|(?<=#)(?=[^#])", pattern)

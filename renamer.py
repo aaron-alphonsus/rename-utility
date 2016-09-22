@@ -4,8 +4,8 @@ import datetime
 
 class Renamer:
     """This class performs the file renaming"""
-    def __init__(self):
-        self.operations = []
+    def __init__(self, operations = []):
+        self.operations = operations
 
     def addOp(self, op):
         self.operations << op
