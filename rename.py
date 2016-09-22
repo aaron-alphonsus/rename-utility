@@ -12,9 +12,12 @@ import sys, argparse
 
 from renamingaction import AddTransform
 
-from renamer import Renamer
+from renamer import Renamer 
 
 import counttransform, lowercase, uppercase, regex, trim
+
+from delete import Delete
+from touch import Touch
 
 '''parser = argparse.ArgumentParser( usage = "-h for help, -v for verbose," 
    "-i for int, -f for float" )'''
@@ -60,21 +63,17 @@ parser.add_argument( "-n", "--number", metavar="countstring", dest="operations",
                      action=AddTransform(counttransform.CountTransform),
     help="#'s in \"countstring\" become numbers" )
 
-'''parser.add_argument( "-i", "--integer", type=int, metavar="N", 
-    help="supply an int value" )
-parser.add_argument( "-f", "--real", type=float, metavar="N", 
-    help="supply a float value" )'''
-'''
-# required positional arguments
-parser.add_argument( "x", type=int, help="base" )
-parser.add_argument( "y", type=int, help="exponent" )
-'''
-
-# followed by 0 or more strings
-parser.add_argument( "files", type=str, nargs='*', help="list of filenames" )
+# followed by 1 or more strings
+parser.add_argument( "files", type=str, nargs='+', help="list of filenames" )
  
 # parse command arguments
 args = parser.parse_args()
+
+if args.delete:
+    Delete(args.files)
+
+if args.touch:
+    Touch(args.files)    
 
 # print results of parsing
 print( '\ncmd args:', sys.argv )
@@ -94,9 +93,3 @@ print( 'args.time =', args.time )
 print( 'args.operations =', args.operations )
 
 print ( "files", args.files )
-'''
-print( 'args.integer =', args.integer )
-print( 'args.real =', args.real )
-print( args.x, "**", args.y, "=", args.x ** args.y )
-print( "names: ", args.names )
-'''
