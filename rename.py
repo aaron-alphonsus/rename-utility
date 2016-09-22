@@ -12,9 +12,12 @@ import sys, argparse
 
 from renamingaction import AddTransform
 
-from renamer import Renamer
+from renamer import Renamer 
 
 import counttransform, lowercase, uppercase, regex, trim
+
+from delete import Delete
+from touch import Touch
 
 '''parser = argparse.ArgumentParser( usage = "-h for help, -v for verbose," 
    "-i for int, -f for float" )'''
@@ -60,13 +63,18 @@ parser.add_argument( "-n", "--number", metavar="countstring", dest="operations",
                      action=AddTransform(counttransform.CountTransform),
     help="#'s in \"countstring\" become numbers" )
 
-# followed by 0 or more strings
-parser.add_argument( "files", type=str, nargs='*', help="list of filenames" )
- 
+# followed by 1 or more strings
+parser.add_argument( "files", type=str, nargs='+', help="list of filenames" )
+
 # parse command arguments
 args = parser.parse_args()
 
+if args.delete:
+    Delete(args.files)
+
+if args.touch:
+    Touch(args.files)    
+
 if args.operations:
     renamer = Renamer(args.operations)
-    
-renamer.apply(args.files)
+    renamer.apply(args.files)
