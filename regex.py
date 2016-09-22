@@ -2,7 +2,7 @@ import re
 
 class RegexTransformer:
     def __init__(self, pat, rep):
-        self.pat = regex.compile(pat)
+        self.pat = re.compile(pat)
         self.rep = rep
 
     def apply(self, name):

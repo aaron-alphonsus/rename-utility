@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 # ***** rename.py *****
 # A file management utility written in Python to perform batch file operations.
 # CSC461 Programming Languages, Fall 2016 (JMW)
@@ -7,6 +9,12 @@
 # <Will be changed later> Parses arguments and prints each argument value
 
 import sys, argparse
+
+from renamingaction import AddTransform
+
+from renamer import Renamer
+
+import counttransform, lowercase, uppercase, regex
 
 '''parser = argparse.ArgumentParser( usage = "-h for help, -v for verbose," 
    "-i for int, -f for float" )'''
@@ -30,18 +38,21 @@ parser.add_argument( "-D", "--date", metavar="DDMMYYYY",
 parser.add_argument( "-T", "--time", metavar="HHMMSS", 
     help="change file timestamps" )
 
-parser.add_argument( "-l", "--lower", action="store_true", 
+parser.add_argument( "-l", "--lower", action=AddTransform(lowercase.Lowercase),
+                     dest="operations", nargs=0,
     help="convert filenames to lowercase" )
-parser.add_argument( "-u", "--upper", action="store_true", 
+parser.add_argument( "-u", "--upper", action=AddTransform(uppercase.Uppercase),
+                     dest="operations", nargs=0,
     help="convert filenames to uppercase" )
 
 parser.add_argument( "-t", "--trim", metavar="n", 
     help="positive n: trim n chars from the start of each filename\n"
          "negative n: trim n chars from the end of each filename" )
 
-parser.add_argument( "-r", "--replace", action="append", nargs="*", 
-    metavar=("oldstring", "newstring"), 
-    help="replace \"oldstring\" with \"newstring\" in filenames" )
+parser.add_argument( "-r", "--replace", action=AddTransform(regex.RegexTransformer), nargs=2, 
+                     metavar=("oldstring", "newstring"), type=str,
+                     dest = "operations",
+                     help="replace \"oldstring\" with \"newstring\" in filenames" )
 parser.parse_args("-r one two -r three four".split())
 
 parser.add_argument( "-n", "--number", metavar="countstring", 
@@ -78,11 +89,8 @@ print( 'args.touch =', args.touch )
 print( 'args.date =', args.date )
 print( 'args.time =', args.time )
 
-print( 'args.lower =', args.lower )
-print( 'args.upper =', args.upper )
-
 print( 'args.trim =', args.trim )
-print( 'args.replace =', args.replace )
+print( 'args.operations =', args.operations )
 print( 'args.number =', args.number )
 
 print ( "files", args.files )
