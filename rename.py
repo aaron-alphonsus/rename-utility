@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 
 # ***** rename.py *****
 # A file management utility written in Python to perform batch file operations.
