@@ -60,43 +60,13 @@ parser.add_argument( "-n", "--number", metavar="countstring", dest="operations",
                      action=AddTransform(counttransform.CountTransform),
     help="#'s in \"countstring\" become numbers" )
 
-'''parser.add_argument( "-i", "--integer", type=int, metavar="N", 
-    help="supply an int value" )
-parser.add_argument( "-f", "--real", type=float, metavar="N", 
-    help="supply a float value" )'''
-'''
-# required positional arguments
-parser.add_argument( "x", type=int, help="base" )
-parser.add_argument( "y", type=int, help="exponent" )
-'''
-
 # followed by 0 or more strings
 parser.add_argument( "files", type=str, nargs='*', help="list of filenames" )
  
 # parse command arguments
 args = parser.parse_args()
 
-# print results of parsing
-print( '\ncmd args:', sys.argv )
-print()
-print( 'argparse:', args )
-print()
-
-print( 'args.verbose =', args.verbose )
-print( 'args.print =', args.print )
-print( 'args.interactive =', args.interactive )
-print( 'args.delete =', args.delete )
-print( 'args.touch =', args.touch )
-
-print( 'args.date =', args.date )
-print( 'args.time =', args.time )
-
-print( 'args.operations =', args.operations )
-
-print ( "files", args.files )
-'''
-print( 'args.integer =', args.integer )
-print( 'args.real =', args.real )
-print( args.x, "**", args.y, "=", args.x ** args.y )
-print( "names: ", args.names )
-'''
+if args.operations:
+    renamer = Renamer(args.operations)
+    
+renamer.apply(args.files)
