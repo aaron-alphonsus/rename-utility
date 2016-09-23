@@ -3,7 +3,7 @@ import os
 import time
 import re
 
-def changeTime(names, time):
+def changeTime(names, time, ctlFunc = lambda s, d: True):
     """ Takes in list of files and string containing time in HHMMSS format.
         Changes time in each file timestamp. """
  
@@ -19,13 +19,13 @@ def changeTime(names, time):
     second = int(second)
 
     for name in names:
+        if ctlFunc(name, "*TIME*"):
+            # get DD MM YYYY from file
+            p_timestamp = os.path.getmtime(name)
+            mdt = datetime.datetime.fromtimestamp(p_timestamp)
 
-        # get DD MM YYYY from file
-        p_timestamp = os.path.getmtime(name)
-        mdt = datetime.datetime.fromtimestamp(p_timestamp)
-        
-        # construct new datetime object with file date and provided time
-        mdt = datetime.datetime(mdt.year, mdt.month, mdt.day, hour, minute, second)
-        
-        # change to new file timestamp by passing in datetime.timestamp()  
-        os.utime(name, (mdt.timestamp(), mdt.timestamp()))
+            # construct new datetime object with file date and provided time
+            mdt = datetime.datetime(mdt.year, mdt.month, mdt.day, hour, minute, second)
+
+            # change to new file timestamp by passing in datetime.timestamp()  
+            os.utime(name, (mdt.timestamp(), mdt.timestamp()))
