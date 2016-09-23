@@ -2,11 +2,19 @@
 
 # ***** rename.py *****
 # A file management utility written in Python to perform batch file operations.
-# CSC461 Programming Languages, Fall 2016 (JMW)
+# The program takes in command-line arguments which are parsed using the argparse module.
+# The operations are then executed in the order given.
+# This program was tested on Unix (Ubuntu 15.10, Arch Linux 4.7.4) and Windows (8.1) operating systems
+#
+# Course: CSC461 Programming Languages, Fall 2016 
+#
+# Professor: Dr. John Weiss
+#
+# Authors: Alexander Iverson, Aaron Alphonsus
+#
 # Usage: python rename.py [-h] [-v] [-p] [-i] [-d] [-dt] [-D DDMMYYYY] 
 #        [-T HHMMSS] [-l] [-u] [-t n] [-r oldstring newstring] [-n countstring]
 #        [files [files ...]]
-# renames files.
 
 import sys, argparse, glob, os
 
