@@ -18,7 +18,8 @@ class Renamer:
     def transform(self, nameList):
         return {name: self.transformSingle(name) for name in nameList}
 
-    def apply(self, nameList):
+    def apply(self, nameList, ctlFunc = lambda s, d: True):
         nameMap = self.transform(nameList)
         for src, dst in nameMap.items():
-            os.rename(src, dst)
+            if ctlFunc(src, dst):
+                os.rename(src, dst)
