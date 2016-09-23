@@ -70,6 +70,8 @@ parser.add_argument("files", type=str, nargs='+', help="list of filenames")
 # parse command arguments
 args = parser.parse_args()
 try:
+    if os.name == "nt":
+        args.files = [name for pat in args.files for name in glob.iglob(pat)]
     if args.delete:
         Delete(args.files)
         exit()
@@ -85,8 +87,6 @@ try:
         changeTime( args.files, args.time[-1] )
 
     if args.operations:
-        if os.name == "nt":
-            args.files = [name for pat in args.files for name in glob.iglob(pat)]
         renamer = Renamer(args.operations)
         if args.verbose:
             renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) or True)
