@@ -81,7 +81,8 @@ try:
         ctlFunc = lambda src, dest: True
         
     if os.name == "nt":
-        args.files = [name for pat in args.files for name in glob.iglob(pat)]
+        args.files = [name for name in args.files if name.find("*") == -1]
+        + [name for pat in args.files for name in glob.iglob(pat) if pat.find("*") != -1] 
     if args.delete:
         Delete(args.files, ctlFunc)
         exit()
@@ -101,6 +102,9 @@ try:
         renamer.apply(args.files, ctlFunc)
 except OSError as ose:
     print(ose.strerror)
+    exit(1)
+except AttributeError:
+    print("invalid format")
     exit(1)
 except KeyboardInterrupt:
     print()
