@@ -70,33 +70,35 @@ parser.add_argument("files", type=str, nargs='+', help="list of filenames")
 # parse command arguments
 args = parser.parse_args()
 try:
+
+    if args.verbose:
+        ctlFunc = lambda src, dest: print(src, "=>", dest) or True
+    elif args.print:
+        ctlFunc = lambda src, dest: print(src, "=>", dest) and False
+    elif args.interactive:
+        ctlFunc = lambda src, dest: input("%s => %s : y/N: " % (src, dest)).upper() == "Y"
+    else:
+        ctlFunc = lambda src, dest: True
+        
+    if os.name == "nt":
+        args.files = [name for pat in args.files for name in glob.iglob(pat)]
     if args.delete:
-        Delete(args.files)
+        Delete(args.files, ctlFunc)
         exit()
 
     if args.touch:
-        Touch(args.files)
+        Touch(args.files, ctlFunc)
         exit()
 
     if args.date:       
-        changeDate( args.files, args.date[-1] )
+        changeDate( args.files, args.date[-1], ctlFunc)
 
     if args.time:       
-        changeTime( args.files, args.time[-1] )
+        changeTime( args.files, args.time[-1], ctlFunc)
 
     if args.operations:
-        if os.name == "nt":
-            args.files = [name for pat in args.files for name in glob.iglob(pat)]
         renamer = Renamer(args.operations)
-        if args.verbose:
-            renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) or True)
-        elif args.print:
-            renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) and False)
-        elif args.interactive:
-            renamer.apply(args.files,
-                          lambda src, dest: input("%s => %s : y/N: " % (src, dest)).upper() == "Y")
-        else:
-            renamer.apply(args.files)
+        renamer.apply(args.files, ctlFunc)
 except OSError as ose:
     print(ose.strerror)
     exit(1)

@@ -3,7 +3,7 @@ import os
 import time
 import re
 
-def changeDate(names, date):
+def changeDate(names, date, ctlFunc = lambda s, d: True):
     """ Takes in list of files and string containing date in DDMMYYYY format.
         Changes date in each file timestamp. """  
 
@@ -20,12 +20,14 @@ def changeDate(names, date):
            
     for name in names:
 
-        # get HH MM SS from file
-        p_timestamp = os.path.getmtime(name)
-        mdt = datetime.datetime.fromtimestamp(p_timestamp)
+        if ctlFunc(name, "*DATE*"):
 
-        # construct new datetime object with file time and provided date
-        mdt = datetime.datetime(year, month, day, mdt.hour, mdt.minute, mdt.second)
+            # get HH MM SS from file
+            p_timestamp = os.path.getmtime(name)
+            mdt = datetime.datetime.fromtimestamp(p_timestamp)
+            
+            # construct new datetime object with file time and provided date
+            mdt = datetime.datetime(year, month, day, mdt.hour, mdt.minute, mdt.second)
 
-        # change to new file timestamp by passing in datetime.timestamp() 
-        os.utime(name, (mdt.timestamp(), mdt.timestamp()))
+            # change to new file timestamp by passing in datetime.timestamp() 
+            os.utime(name, (mdt.timestamp(), mdt.timestamp()))
