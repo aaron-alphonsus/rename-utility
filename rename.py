@@ -37,9 +37,9 @@ parser.add_argument("-d", "--delete", action="store_true",
 parser.add_argument("-dt", "--touch", action="store_true", 
                     help="\"touch\" files (update date/time stamp to current date/time")
 
-parser.add_argument("-D", "--date", metavar="DDMMYYYY", 
+parser.add_argument("-D", "--date", metavar="DDMMYYYY", type=str,
                     help="change file datestamps")
-parser.add_argument("-T", "--time", metavar="HHMMSS", 
+parser.add_argument("-T", "--time", metavar="HHMMSS", type=str,
                     help="change file timestamps")
 
 renacts = parser.add_argument_group("renaming", "flags to transform file names")
@@ -91,10 +91,10 @@ try:
         exit()
 
     if args.date:       
-        changeDate( args.files, args.date[-1], ctlFunc)
+        changeDate( args.files, args.date, ctlFunc)
 
     if args.time:       
-        changeTime( args.files, args.time[-1], ctlFunc)
+        changeTime( args.files, args.time, ctlFunc)
 
     if args.operations:
         renamer = Renamer(args.operations)
