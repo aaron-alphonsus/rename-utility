@@ -8,7 +8,7 @@
 #        [files [files ...]]
 # renames files.
 
-import sys, argparse
+import sys, argparse, glob
 
 from renamingaction import AddTransform
 
@@ -25,46 +25,47 @@ parser = argparse.ArgumentParser()
 
 # optional switches (may occur in any order)
 renmods = parser.add_mutually_exclusive_group()
-renmods.add_argument( "-v", "--verbose", action="store_true", 
-    help="print old and new filenames during processing" )
-renmods.add_argument( "-p", "--print", action="store_true", 
-    help="print old and new filenames, do not rename" )
-renmods.add_argument( "-i", "--interactive", action="store_true", 
-    help="interactive mode, ask user prior to processing each file" )
-parser.add_argument( "-d", "--delete", action="store_true", 
-    help="delete files" )
-parser.add_argument( "-dt", "--touch", action="store_true", 
-    help="\"touch\" files (update date/time stamp to current date/time" )
 
-parser.add_argument( "-D", "--date", metavar="DDMMYYYY", nargs=1, 
-    help="change file datestamps" )
-parser.add_argument( "-T", "--time", metavar="HHMMSS", nargs=1,
-    help="change file timestamps" )
+renmods.add_argument("-v", "--verbose", action="store_true", 
+                     help="print old and new filenames during processing")
+renmods.add_argument("-p", "--print", action="store_true", 
+                     help="print old and new filenames, do not rename")
+renmods.add_argument("-i", "--interactive", action="store_true", 
+                     help="interactive mode, ask user prior to processing each file")
+parser.add_argument("-d", "--delete", action="store_true", 
+                    help="delete files")
+parser.add_argument("-dt", "--touch", action="store_true", 
+                    help="\"touch\" files (update date/time stamp to current date/time")
+
+parser.add_argument("-D", "--date", metavar="DDMMYYYY", 
+                    help="change file datestamps")
+parser.add_argument("-T", "--time", metavar="HHMMSS", 
+                    help="change file timestamps")
 
 renacts = parser.add_argument_group("renaming", "flags to transform file names")
-renacts.add_argument( "-l", "--lower", action=AddTransform(lowercase.Lowercase),
+renacts.add_argument("-l", "--lower", action=AddTransform(lowercase.Lowercase),
                      dest="operations", nargs=0,
-    help="convert filenames to lowercase" )
-renacts.add_argument( "-u", "--upper", action=AddTransform(uppercase.Uppercase),
+                     help="convert filenames to lowercase")
+renacts.add_argument("-u", "--upper", action=AddTransform(uppercase.Uppercase),
                      dest="operations", nargs=0,
-    help="convert filenames to uppercase" )
+                     help="convert filenames to uppercase")
 
-renacts.add_argument( "-t", "--trim", metavar="n", type=int,
+renacts.add_argument("-t", "--trim", metavar="n", type=int,
                      action=AddTransform(trim.TrimTransformer), dest="operations",
-    help="positive n: trim n chars from the start of each filename\n"
-         "negative n: trim n chars from the end of each filename" )
+                     help="positive n: trim n chars from the start of each filename\n"
+                     "negative n: trim n chars from the end of each filename")
 
-renacts.add_argument( "-r", "--replace", action=AddTransform(regex.RegexTransformer), nargs=2, 
+renacts.add_argument("-r", "--replace", action=AddTransform(regex.RegexTransformer), nargs=2, 
                      metavar=("oldstring", "newstring"), type=str,
                      dest = "operations",
-                     help="replace \"oldstring\" with \"newstring\" in filenames" )
+                     help="replace \"oldstring\" with \"newstring\" in filenames")
 
-renacts.add_argument( "-n", "--number", metavar="countstring", dest="operations",
+renacts.add_argument("-n", "--number", metavar="countstring", dest="operations",
                      action=AddTransform(counttransform.CountTransform),
-    help="#'s in \"countstring\" become numbers" )
+                     help="#'s in \"countstring\" become numbers")
 
 # followed by 1 or more strings
-parser.add_argument( "files", type=str, nargs='+', help="list of filenames" )
+parser.add_argument("files", type=str, nargs='+', help="list of filenames")
 
 # parse command arguments
 args = parser.parse_args()
@@ -84,6 +85,8 @@ try:
         changeTime( args.files, args.time[-1] )
 
     if args.operations:
+        if os.name() == "nt":
+            args.files = [name for pat in args.files for name in glob.iglob(pat)]
         renamer = Renamer(args.operations)
         if args.verbose:
             renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) or True)
