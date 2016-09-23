@@ -8,7 +8,7 @@
 #        [files [files ...]]
 # renames files.
 
-import sys, argparse, glob
+import sys, argparse, glob, os
 
 from renamingaction import AddTransform
 
@@ -79,7 +79,7 @@ try:
         exit()
 
     if args.operations:
-        if os.name() == "nt":
+        if os.name == "nt":
             args.files = [name for pat in args.files for name in glob.iglob(pat)]
         renamer = Renamer(args.operations)
         if args.verbose:
