@@ -3,7 +3,7 @@ import os
 import time
 import re
 
-def changeDate( names, date ):
+def changeDate(names, date):
 
     # parse date
     try:
@@ -22,6 +22,6 @@ def changeDate( names, date ):
         p_timestamp = os.path.getmtime(name)
         mdt = datetime.datetime.fromtimestamp(p_timestamp)
         
-        mdt = datetime.datetime (year, month, day, mdt.hour, mdt.minute, mdt.second)
+        mdt = datetime.datetime(year, month, day, mdt.hour, mdt.minute, mdt.second)
    
-        os.utime( name, (mdt.timestamp(), mdt.timestamp() ))
+        os.utime(name, (mdt.timestamp(), mdt.timestamp()))
