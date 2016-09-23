@@ -81,7 +81,7 @@ try:
         ctlFunc = lambda src, dest: True
         
     if os.name == "nt":
-        args.files = [name for name in args.files if name.find("*") == -1]
+        args.files = [name for name in args.files if name.find("*") == -1] \
         + [name for pat in args.files for name in glob.iglob(pat) if pat.find("*") != -1] 
     if args.delete:
         Delete(args.files, ctlFunc)
