@@ -4,7 +4,9 @@ import time
 import re
 
 def changeTime( names, time ):
-
+    """ Takes in list of files and string containing time in HHMMSS format.
+        Changes time in each file timestamp. """
+    
     # parse time
     try:
         hour, minute, second = re.fullmatch("(\d\d)(\d\d)(\d\d)", time).groups()
@@ -22,6 +24,8 @@ def changeTime( names, time ):
         p_timestamp = os.path.getmtime(name)
         mdt = datetime.datetime.fromtimestamp(p_timestamp)
         
+        # construct new datetime object with file date and provided time
         mdt = datetime.datetime (mdt.year, mdt.month, mdt.day, hour, minute, second)
-   
+        
+        # change to new file timestamp by passing in datetime.timestamp()  
         os.utime( name, (mdt.timestamp(), mdt.timestamp() ))

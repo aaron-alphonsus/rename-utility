@@ -18,9 +18,8 @@ import counttransform, lowercase, uppercase, regex, trim
 
 from delete import Delete
 from touch import Touch
-
-'''parser = argparse.ArgumentParser( usage = "-h for help, -v for verbose," 
-   "-i for int, -f for float" )'''
+from changeDate import changeDate
+from changeTime import changeTime
 
 parser = argparse.ArgumentParser()
 
@@ -37,9 +36,9 @@ parser.add_argument( "-d", "--delete", action="store_true",
 parser.add_argument( "-dt", "--touch", action="store_true", 
     help="\"touch\" files (update date/time stamp to current date/time" )
 
-parser.add_argument( "-D", "--date", metavar="DDMMYYYY", 
+parser.add_argument( "-D", "--date", metavar="DDMMYYYY", nargs=1, 
     help="change file datestamps" )
-parser.add_argument( "-T", "--time", metavar="HHMMSS", 
+parser.add_argument( "-T", "--time", metavar="HHMMSS", nargs=1,
     help="change file timestamps" )
 
 renacts = parser.add_argument_group("renaming", "flags to transform file names")
@@ -77,6 +76,12 @@ try:
     if args.touch:
         Touch(args.files)
         exit()
+
+    if args.date:       
+        changeDate( args.files, args.date[-1] )
+
+    if args.time:       
+        changeTime( args.files, args.time[-1] )
 
     if args.operations:
         renamer = Renamer(args.operations)
