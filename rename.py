@@ -69,23 +69,29 @@ parser.add_argument( "files", type=str, nargs='+', help="list of filenames" )
 
 # parse command arguments
 args = parser.parse_args()
+try:
+    if args.delete:
+        Delete(args.files)
+        exit()
 
-if args.delete:
-    Delete(args.files)
-    exit()
+    if args.touch:
+        Touch(args.files)
+        exit()
 
-if args.touch:
-    Touch(args.files)
-    exit()
-
-if args.operations:
-    renamer = Renamer(args.operations)
-    if args.verbose:
-        renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) or True)
-    elif args.print:
-        renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) and False)
-    elif args.interactive:
-        renamer.apply(args.files,
-                      lambda src, dest: input("%s => %s : y/n" % (src, dest)).upper() == "Y")
-    else:
-        renamer.apply(args.files)
+    if args.operations:
+        renamer = Renamer(args.operations)
+        if args.verbose:
+            renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) or True)
+        elif args.print:
+            renamer.apply(args.files, lambda src, dest: print(src, "=>", dest) and False)
+        elif args.interactive:
+            renamer.apply(args.files,
+                          lambda src, dest: input("%s => %s : y/N: " % (src, dest)).upper() == "Y")
+        else:
+            renamer.apply(args.files)
+except OSError as ose:
+    print(ose.strerror)
+    exit(1)
+except KeyboardInterrupt:
+    print()
+    exit(1)
